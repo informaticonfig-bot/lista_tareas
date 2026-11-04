@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Esta línea hace que la página se ajuste al ancho del celular -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de tareas</title>
+
+  <style>
+    /* Único estilo por ahora: las tareas completadas se ven tachadas */
+    .completada {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ESTRUCTURA: lo que se ve en la página -->
+  <h1>Mi lista de tareas</h1>
+
+  <input type="text" id="campoTarea" placeholder="Escribe una tarea">
+  <button id="botonAgregar">Agregar</button>
+
+  <ul id="listaTareas"></ul>
+
+  <script>
+    // 1. Conectar el código con los elementos de la página
+    const campoTarea = document.getElementById("campoTarea");
+    const botonAgregar = document.getElementById("botonAgregar");
+    const listaTareas = document.getElementById("listaTareas");
+
+    // 2. Función que crea y agrega una tarea nueva
+    function agregarTarea() {
+      const texto = campoTarea.value.trim(); // trim() quita espacios sobrantes
+
+      // Si el campo está vacío, no hacemos nada
+      if (texto === "") {
+        return;
+      }
+
+      // Crear los elementos de la tarea
+      const item = document.createElement("li");
+      const casilla = document.createElement("input");
+      casilla.type = "checkbox";
+      const etiqueta = document.createElement("span");
+      etiqueta.textContent = texto;
+      const botonBorrar = document.createElement("button");
+      botonBorrar.textContent = "Borrar";
+
+      // 3. Al marcar o desmarcar la casilla, se tacha o destacha el texto
+      casilla.addEventListener("change", function () {
+        etiqueta.classList.toggle("completada", casilla.checked);
+      });
+
+      // 4. Al presionar "Borrar", se elimina la tarea
+      botonBorrar.addEventListener("click", function () {
+        item.remove();
+      });
+
+      // Armar la tarea y ponerla en la lista
+      item.appendChild(casilla);
+      item.appendChild(etiqueta);
+      item.appendChild(botonBorrar);
+      listaTareas.appendChild(item);
+
+      // Limpiar el campo y dejarlo listo para otra tarea
+      campoTarea.value = "";
+      campoTarea.focus();
+    }
+
+    // 5. Agregar con el botón
+    botonAgregar.addEventListener("click", agregarTarea);
+
+    // 6. Agregar también con la tecla Enter
+    campoTarea.addEventListener("keydown", function (evento) {
+      if (evento.key === "Enter") {
+        agregarTarea();
+      }
+    });
+  </script>
+
+</body>
+</html>
