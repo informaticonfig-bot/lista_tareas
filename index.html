@@ -23,11 +23,24 @@
 
   <ul id="listaTareas"></ul>
 
+  <!-- Ventana de confirmación: está oculta hasta que se necesita -->
+  <dialog id="ventanaConfirmar">
+    <p>Confirma borrar tarea no completada?</p>
+    <button id="botonConfirmar">Confirmar</button>
+    <button id="botonCancelar">Cancelar</button>
+  </dialog>
+
   <script>
     // 1. Conectar el código con los elementos de la página
     const campoTarea = document.getElementById("campoTarea");
     const botonAgregar = document.getElementById("botonAgregar");
     const listaTareas = document.getElementById("listaTareas");
+    const ventanaConfirmar = document.getElementById("ventanaConfirmar");
+    const botonConfirmar = document.getElementById("botonConfirmar");
+    const botonCancelar = document.getElementById("botonCancelar");
+
+    // Aquí se recuerda qué tarea se quiere borrar mientras la ventana está abierta
+    let tareaPendiente = null;
 
     // 2. Función que crea y agrega una tarea nueva
     function agregarTarea() {
@@ -52,9 +65,16 @@
         etiqueta.classList.toggle("completada", casilla.checked);
       });
 
-      // 4. Al presionar "Borrar", se elimina la tarea
+      // 4. Al presionar "Borrar":
+      //    - si la tarea está completada, se borra directamente
+      //    - si NO está completada, se abre la ventana para confirmar
       botonBorrar.addEventListener("click", function () {
-        item.remove();
+        if (casilla.checked) {
+          item.remove();
+        } else {
+          tareaPendiente = item;
+          ventanaConfirmar.showModal();
+        }
       });
 
       // Armar la tarea y ponerla en la lista
@@ -67,6 +87,25 @@
       campoTarea.value = "";
       campoTarea.focus();
     }
+
+    // Botón "Confirmar": borra la tarea pendiente y cierra la ventana
+    botonConfirmar.addEventListener("click", function () {
+      if (tareaPendiente) {
+        tareaPendiente.remove();
+      }
+      ventanaConfirmar.close();
+    });
+
+    // Botón "Cancelar": solo cierra la ventana, la tarea se queda
+    botonCancelar.addEventListener("click", function () {
+      ventanaConfirmar.close();
+    });
+
+    // Cuando la ventana se cierra (por cualquier motivo, incluida la tecla Esc),
+    // se olvida la tarea pendiente
+    ventanaConfirmar.addEventListener("close", function () {
+      tareaPendiente = null;
+    });
 
     // 5. Agregar con el botón
     botonAgregar.addEventListener("click", agregarTarea);
