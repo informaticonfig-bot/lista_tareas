@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <!-- Esta línea hace que la página se ajuste al ancho del celular -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <title>Lista de tareas</title>
 
   <style>
@@ -86,6 +87,55 @@
 
     #botonAgregar:active {
       transform: translateY(0);
+    }
+
+    /* Botones de filtro */
+    .filtros {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .filtros button {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4f46e5;
+      background: #eef2ff;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    }
+
+    .filtros button:hover {
+      background: #e0e7ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+    }
+
+    .filtros button:active {
+      transform: translateY(0);
+    }
+
+    /* Botón de filtro activo: resaltado con otro color */
+    .filtros button.activo {
+      color: #ffffff;
+      background: #9333ea;
+      box-shadow: 0 4px 10px rgba(147, 51, 234, 0.35);
+    }
+
+    .filtros button.activo:hover {
+      background: #7e22ce;
+    }
+
+    /* Contador de tareas pendientes */
+    #contador {
+      margin: 0 0 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #6b7280;
     }
 
     /* Lista sin viñetas */
@@ -222,6 +272,16 @@
       <button id="botonAgregar">Agregar</button>
     </div>
 
+    <!-- Filtros: deciden qué tareas se muestran -->
+    <div class="filtros">
+      <button id="filtroTodas" data-filtro="todas" class="activo">Todas</button>
+      <button id="filtroPendientes" data-filtro="pendientes">Pendientes</button>
+      <button id="filtroCompletadas" data-filtro="completadas">Completadas</button>
+    </div>
+
+    <!-- Contador de tareas pendientes -->
+    <p id="contador"></p>
+
     <ul id="listaTareas"></ul>
 
   </div>
@@ -241,6 +301,8 @@
     const ventanaConfirmar = document.getElementById("ventanaConfirmar");
     const botonConfirmar = document.getElementById("botonConfirmar");
     const botonCancelar = document.getElementById("botonCancelar");
+    const contador = document.getElementById("contador");
+    const botonesFiltro = document.querySelectorAll(".filtros button");
 
     // 2. GUARDADO: nombre del "cajón" del navegador donde guardamos las tareas
     const CLAVE = "lista-de-tareas";
@@ -277,11 +339,42 @@
     // Recuerda qué tarea se quiere borrar mientras la ventana está abierta
     let tareaPendienteId = null;
 
-    // 4. Dibujar en la página todas las tareas de la lista
+    // Filtro activo: "todas", "pendientes" o "completadas".
+    // No se guarda: al recargar la página vuelve a "todas".
+    let filtroActual = "todas";
+
+    // Lista aparte, solo para mostrar. La lista original "tareas" nunca se modifica al filtrar.
+    let tareasVisibles = [];
+
+    // Actualizar el contador de tareas pendientes (siempre cuenta sobre la lista original)
+    function actualizarContador() {
+      const pendientes = tareas.filter(function (tarea) {
+        return !tarea.completada;
+      }).length;
+
+      contador.textContent = pendientes === 1
+        ? "1 tarea pendiente"
+        : pendientes + " tareas pendientes";
+    }
+
+    // 4. Dibujar en la página las tareas que toca mostrar según el filtro
     function mostrarTareas() {
       listaTareas.innerHTML = ""; // vaciar lo que se veía antes
 
-      tareas.forEach(function (tarea) {
+      // Armar la lista de visibles a partir de una copia filtrada
+      tareasVisibles = tareas.filter(function (tarea) {
+        if (filtroActual === "pendientes") {
+          return !tarea.completada;
+        }
+        if (filtroActual === "completadas") {
+          return tarea.completada;
+        }
+        return true; // "todas"
+      });
+
+      actualizarContador();
+
+      tareasVisibles.forEach(function (tarea) {
         const item = document.createElement("li");
 
         const casilla = document.createElement("input");
@@ -300,6 +393,7 @@
           tarea.completada = casilla.checked;
           etiqueta.classList.toggle("completada", tarea.completada);
           guardarTareas();
+          mostrarTareas(); // redibuja: aplica el filtro y actualiza el contador
         });
 
         // Al presionar "Borrar":
@@ -368,6 +462,19 @@
     // se olvida la tarea pendiente
     ventanaConfirmar.addEventListener("close", function () {
       tareaPendienteId = null;
+    });
+
+    // Botones de filtro: cambian el filtro, resaltan el activo y redibujan
+    botonesFiltro.forEach(function (boton) {
+      boton.addEventListener("click", function () {
+        filtroActual = boton.dataset.filtro;
+
+        botonesFiltro.forEach(function (otro) {
+          otro.classList.toggle("activo", otro === boton);
+        });
+
+        mostrarTareas();
+      });
     });
 
     // Agregar con el botón y con la tecla Enter
