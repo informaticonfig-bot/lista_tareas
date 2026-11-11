@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- Esta línea hace que la página se ajuste al ancho del celular -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <title>Lista de tareas</title>
 
   <style>
@@ -199,6 +199,22 @@
       transform: translateY(0);
     }
 
+    /* Casilla para editar una tarea directamente en la lista */
+    #listaTareas li input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      padding: 8px 10px;
+      font-size: 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    #listaTareas li input[type="text"]:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
     /* Ventana de confirmación */
     dialog {
       border: none;
@@ -366,9 +382,11 @@
         if (filtroActual === "pendientes") {
           return !tarea.completada;
         }
+
         if (filtroActual === "completadas") {
           return tarea.completada;
         }
+
         return true; // "todas"
       });
 
@@ -387,6 +405,38 @@
 
         const botonBorrar = document.createElement("button");
         botonBorrar.textContent = "Borrar";
+
+        // Botón para editar la tarea
+        const botonEditar = document.createElement("button");
+        botonEditar.textContent = "Editar";
+
+        // Al presionar "Editar": se muestra una casilla con el texto actual
+        botonEditar.addEventListener("click", function () {
+          const campoEditar = document.createElement("input");
+          campoEditar.type = "text";
+          campoEditar.value = tarea.texto;
+
+          const botonGuardar = document.createElement("button");
+          botonGuardar.textContent = "Guardar";
+
+          item.replaceChild(campoEditar, etiqueta);
+          item.replaceChild(botonGuardar, botonEditar);
+
+          campoEditar.focus();
+
+          // Al presionar "Guardar": se actualiza y guarda la tarea
+          botonGuardar.addEventListener("click", function () {
+            const nuevoTexto = campoEditar.value.trim();
+
+            if (nuevoTexto === "") {
+              return;
+            }
+
+            tarea.texto = nuevoTexto;
+            guardarTareas();
+            mostrarTareas();
+          });
+        });
 
         // Al marcar o desmarcar: se tacha el texto y SE GUARDA
         casilla.addEventListener("change", function () {
@@ -410,6 +460,7 @@
 
         item.appendChild(casilla);
         item.appendChild(etiqueta);
+        item.appendChild(botonEditar);
         item.appendChild(botonBorrar);
         listaTareas.appendChild(item);
       });
@@ -441,6 +492,7 @@
       tareas = tareas.filter(function (tarea) {
         return tarea.id !== id; // nos quedamos con todas menos la borrada
       });
+
       guardarTareas();
       mostrarTareas();
     }
@@ -450,6 +502,7 @@
       if (tareaPendienteId !== null) {
         borrarTarea(tareaPendienteId);
       }
+
       ventanaConfirmar.close();
     });
 
