@@ -46,13 +46,14 @@
     /* Fila para escribir y agregar tareas */
     .fila-agregar {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       margin-bottom: 20px;
     }
 
     #campoTarea {
       flex: 1;
-      min-width: 0;
+      min-width: 160px;
       padding: 10px 12px;
       font-size: 1rem;
       border: 2px solid #e5e7eb;
@@ -62,6 +63,24 @@
     }
 
     #campoTarea:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    /* NUEVO: Selector de fecha opcional */
+    #campoFecha {
+      padding: 9px 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: #374151;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      outline: none;
+      background: #ffffff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #campoFecha:focus {
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
@@ -89,7 +108,7 @@
       transform: translateY(0);
     }
 
-    /* NUEVO: Fila para buscar tareas */
+    /* Fila para buscar tareas */
     .fila-buscar {
       display: flex;
       gap: 8px;
@@ -201,7 +220,7 @@
       border-radius: 10px;
     }
 
-    /* NUEVO: Estilo para el mensaje "No hay resultados" */
+    /* Estilo para el mensaje "No hay resultados" */
     #listaTareas li.sin-resultados {
       justify-content: center;
       color: #6b7280;
@@ -210,10 +229,49 @@
       background: #f3f4f6;
     }
 
-    #listaTareas li span {
+    /* NUEVO: Contenedor para el texto y la fecha de cada tarea */
+    .contenido-tarea {
       flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .contenido-tarea span {
       word-break: break-word;
       transition: color 0.2s ease;
+    }
+
+    /* NUEVO: Estilos de fecha y estados (Vencida / Vence hoy) */
+    .info-fecha {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: #6b7280;
+    }
+
+    .etiqueta-vencida {
+      color: #dc2626;
+      background: #fee2e2;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .texto-vencida {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .etiqueta-hoy {
+      color: #c2410c;
+      background: #ffedd5;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
     }
 
     #listaTareas input[type="checkbox"] {
@@ -231,7 +289,7 @@
 
     /* Botón Borrar (separado del texto con más espacio) */
     #listaTareas li button {
-      margin-left: 12px;
+      margin-left: 6px;
       padding: 6px 14px;
       font-size: 0.9rem;
       font-weight: 600;
@@ -254,17 +312,20 @@
     }
 
     /* Casilla para editar una tarea directamente en la lista */
-    #listaTareas li input[type="text"] {
-      flex: 1;
-      min-width: 0;
-      padding: 8px 10px;
-      font-size: 1rem;
+    #listaTareas li input[type="text"],
+    #listaTareas li input[type="date"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 7px 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
       border: 2px solid #e5e7eb;
       border-radius: 6px;
       outline: none;
     }
 
-    #listaTareas li input[type="text"]:focus {
+    #listaTareas li input[type="text"]:focus,
+    #listaTareas li input[type="date"]:focus {
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
@@ -339,10 +400,12 @@
 
     <div class="fila-agregar">
       <input type="text" id="campoTarea" placeholder="Escribe una tarea">
+      <!-- NUEVO: Selector de fecha opcional -->
+      <input type="date" id="campoFecha" title="Fecha límite (opcional)">
       <button id="botonAgregar">Agregar</button>
     </div>
 
-    <!-- NUEVO: Sección de Buscar tarea (encima de los botones de filtro) -->
+    <!-- Sección de Buscar tarea (encima de los botones de filtro) -->
     <div class="fila-buscar">
       <input type="text" id="campoBuscar" placeholder="Buscar tarea...">
       <button id="botonLimpiar">Limpiar</button>
@@ -372,6 +435,8 @@
   <script>
     // 1. Conectar el código con los elementos de la página
     const campoTarea = document.getElementById("campoTarea");
+    const campoFecha = document.getElementById("campoFecha");
+    campoFecha.min = obtenerFechaHoy();
     const botonAgregar = document.getElementById("botonAgregar");
     const campoBuscar = document.getElementById("campoBuscar");
     const botonLimpiar = document.getElementById("botonLimpiar");
@@ -410,8 +475,26 @@
       }
     }
 
+    // NUEVO: Obtener la fecha de hoy en formato "AAAA-MM-DD" (hora local)
+    function obtenerFechaHoy() {
+      const ahora = new Date();
+      const anio = ahora.getFullYear();
+      const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+      const dia = String(ahora.getDate()).padStart(2, "0");
+      return anio + "-" + mes + "-" + dia;
+    }
+
+    // NUEVO: Convertir "AAAA-MM-DD" a "DD/MM/AAAA" (día/mes/año)
+    function formatearFecha(fechaISO) {
+      if (!fechaISO) {
+        return "";
+      }
+      const partes = fechaISO.split("-");
+      return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
     // 3. La lista de tareas vive aquí, en memoria.
-    //    Cada tarea es un objeto: { id: 123, texto: "Comprar pan", completada: false }
+    //    Cada tarea es un objeto: { id: 123, texto: "Comprar pan", fecha: "2026-11-20", completada: false }
     let tareas = cargarTareas();
 
     // Recuerda qué tarea se quiere borrar mientras la ventana está abierta
@@ -441,6 +524,7 @@
     // 4. Dibujar en la página las tareas que toca mostrar según el filtro y la búsqueda
     function mostrarTareas() {
       listaTareas.innerHTML = ""; // vaciar lo que se veía antes
+      const hoy = obtenerFechaHoy();
 
       // Armar la lista de visibles a partir de una copia filtrada (sin tocar "tareas")
       tareasVisibles = tareas.filter(function (tarea) {
@@ -476,9 +560,54 @@
         casilla.type = "checkbox";
         casilla.checked = tarea.completada;
 
+        // Contenedor para el texto y la fecha límite
+        const contenido = document.createElement("div");
+        contenido.classList.add("contenido-tarea");
+
         const etiqueta = document.createElement("span");
         etiqueta.textContent = tarea.texto;
         etiqueta.classList.toggle("completada", tarea.completada);
+
+        contenido.appendChild(etiqueta);
+
+        // NUEVO: Mostrar fecha límite si la tarea tiene una asignada
+        if (tarea.fecha) {
+          const infoFecha = document.createElement("div");
+          infoFecha.classList.add("info-fecha");
+
+          const textoFecha = document.createElement("small");
+          textoFecha.textContent = "Límite: " + formatearFecha(tarea.fecha);
+
+          if (tarea.completada) {
+            // Una tarea completada nunca se muestra como vencida
+            textoFecha.classList.add("completada");
+            infoFecha.appendChild(textoFecha);
+          } else if (tarea.fecha < hoy) {
+            // Tarea vencida (en rojo con el texto "Vencida")
+            etiqueta.classList.add("texto-vencida");
+            textoFecha.classList.add("texto-vencida");
+
+            const badgeVencida = document.createElement("span");
+            badgeVencida.textContent = "Vencida";
+            badgeVencida.classList.add("etiqueta-vencida");
+
+            infoFecha.appendChild(textoFecha);
+            infoFecha.appendChild(badgeVencida);
+          } else if (tarea.fecha === hoy) {
+            // Tarea que vence hoy (etiqueta "Vence hoy" en color naranja)
+            const badgeHoy = document.createElement("span");
+            badgeHoy.textContent = "Vence hoy";
+            badgeHoy.classList.add("etiqueta-hoy");
+
+            infoFecha.appendChild(textoFecha);
+            infoFecha.appendChild(badgeHoy);
+          } else {
+            // Fecha futura normal
+            infoFecha.appendChild(textoFecha);
+          }
+
+          contenido.appendChild(infoFecha);
+        }
 
         const botonBorrar = document.createElement("button");
         botonBorrar.textContent = "Borrar";
@@ -487,16 +616,23 @@
         const botonEditar = document.createElement("button");
         botonEditar.textContent = "Editar";
 
-        // Al presionar "Editar": se muestra una casilla con el texto actual
+        // Al presionar "Editar": se muestra una casilla con el texto actual y su fecha
         botonEditar.addEventListener("click", function () {
           const campoEditar = document.createElement("input");
           campoEditar.type = "text";
           campoEditar.value = tarea.texto;
 
+          const campoEditarFecha = document.createElement("input");
+          campoEditarFecha.type = "date";
+          campoEditarFecha.value = tarea.fecha || "";
+
           const botonGuardar = document.createElement("button");
           botonGuardar.textContent = "Guardar";
 
-          item.replaceChild(campoEditar, etiqueta);
+          contenido.innerHTML = "";
+          contenido.appendChild(campoEditar);
+          contenido.appendChild(campoEditarFecha);
+
           item.replaceChild(botonGuardar, botonEditar);
 
           campoEditar.focus();
@@ -510,6 +646,7 @@
             }
 
             tarea.texto = nuevoTexto;
+            tarea.fecha = campoEditarFecha.value;
             guardarTareas();
             mostrarTareas();
           });
@@ -518,9 +655,8 @@
         // Al marcar o desmarcar: se tacha el texto y SE GUARDA
         casilla.addEventListener("change", function () {
           tarea.completada = casilla.checked;
-          etiqueta.classList.toggle("completada", tarea.completada);
           guardarTareas();
-          mostrarTareas(); // redibuja: aplica el filtro y actualiza el contador
+          mostrarTareas(); // redibuja: aplica el filtro, quita estado "Vencida" si se completó y actualiza el contador
         });
 
         // Al presionar "Borrar":
@@ -536,7 +672,7 @@
         });
 
         item.appendChild(casilla);
-        item.appendChild(etiqueta);
+        item.appendChild(contenido);
         item.appendChild(botonEditar);
         item.appendChild(botonBorrar);
         listaTareas.appendChild(item);
@@ -554,6 +690,7 @@
       tareas.push({
         id: Date.now(), // un número único basado en la hora actual
         texto: texto,
+        fecha: campoFecha.value, // opcional: queda "" si no se eligió fecha
         completada: false
       });
 
@@ -561,6 +698,7 @@
       mostrarTareas();
 
       campoTarea.value = "";
+      campoFecha.value = "";
       campoTarea.focus();
     }
 
@@ -607,13 +745,13 @@
       });
     });
 
-    // NUEVO: Buscar en tiempo real mientras el usuario escribe
+    // Buscar en tiempo real mientras el usuario escribe
     campoBuscar.addEventListener("input", function () {
       textoBusqueda = campoBuscar.value.trim().toLowerCase();
       mostrarTareas();
     });
 
-    // NUEVO: Botón para limpiar la búsqueda
+    // Botón para limpiar la búsqueda
     botonLimpiar.addEventListener("click", function () {
       campoBuscar.value = "";
       textoBusqueda = "";
