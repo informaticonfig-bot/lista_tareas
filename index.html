@@ -89,6 +89,51 @@
       transform: translateY(0);
     }
 
+    /* NUEVO: Fila para buscar tareas */
+    .fila-buscar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    #campoBuscar {
+      flex: 1;
+      min-width: 0;
+      padding: 9px 12px;
+      font-size: 0.95rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #campoBuscar:focus {
+      border-color: #9333ea;
+      box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+    }
+
+    #botonLimpiar {
+      padding: 9px 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #374151;
+      background: #e5e7eb;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    }
+
+    #botonLimpiar:hover {
+      background: #d1d5db;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    #botonLimpiar:active {
+      transform: translateY(0);
+    }
+
     /* Botones de filtro */
     .filtros {
       display: flex;
@@ -154,6 +199,15 @@
       background: #f9fafb;
       border: 1px solid #e5e7eb;
       border-radius: 10px;
+    }
+
+    /* NUEVO: Estilo para el mensaje "No hay resultados" */
+    #listaTareas li.sin-resultados {
+      justify-content: center;
+      color: #6b7280;
+      font-weight: 600;
+      font-style: italic;
+      background: #f3f4f6;
     }
 
     #listaTareas li span {
@@ -288,6 +342,12 @@
       <button id="botonAgregar">Agregar</button>
     </div>
 
+    <!-- NUEVO: Sección de Buscar tarea (encima de los botones de filtro) -->
+    <div class="fila-buscar">
+      <input type="text" id="campoBuscar" placeholder="Buscar tarea...">
+      <button id="botonLimpiar">Limpiar</button>
+    </div>
+
     <!-- Filtros: deciden qué tareas se muestran -->
     <div class="filtros">
       <button id="filtroTodas" data-filtro="todas" class="activo">Todas</button>
@@ -313,6 +373,8 @@
     // 1. Conectar el código con los elementos de la página
     const campoTarea = document.getElementById("campoTarea");
     const botonAgregar = document.getElementById("botonAgregar");
+    const campoBuscar = document.getElementById("campoBuscar");
+    const botonLimpiar = document.getElementById("botonLimpiar");
     const listaTareas = document.getElementById("listaTareas");
     const ventanaConfirmar = document.getElementById("ventanaConfirmar");
     const botonConfirmar = document.getElementById("botonConfirmar");
@@ -359,7 +421,10 @@
     // No se guarda: al recargar la página vuelve a "todas".
     let filtroActual = "todas";
 
-    // Lista aparte, solo para mostrar. La lista original "tareas" nunca se modifica al filtrar.
+    // Texto actual de búsqueda (en minúsculas)
+    let textoBusqueda = "";
+
+    // Lista aparte, solo para mostrar. La lista original "tareas" nunca se modifica al filtrar o buscar.
     let tareasVisibles = [];
 
     // Actualizar el contador de tareas pendientes (siempre cuenta sobre la lista original)
@@ -373,24 +438,36 @@
         : pendientes + " tareas pendientes";
     }
 
-    // 4. Dibujar en la página las tareas que toca mostrar según el filtro
+    // 4. Dibujar en la página las tareas que toca mostrar según el filtro y la búsqueda
     function mostrarTareas() {
       listaTareas.innerHTML = ""; // vaciar lo que se veía antes
 
-      // Armar la lista de visibles a partir de una copia filtrada
+      // Armar la lista de visibles a partir de una copia filtrada (sin tocar "tareas")
       tareasVisibles = tareas.filter(function (tarea) {
+        // 1) Verificar que cumpla con el filtro actual
+        let cumpleFiltro = true;
         if (filtroActual === "pendientes") {
-          return !tarea.completada;
+          cumpleFiltro = !tarea.completada;
+        } else if (filtroActual === "completadas") {
+          cumpleFiltro = tarea.completada;
         }
 
-        if (filtroActual === "completadas") {
-          return tarea.completada;
-        }
+        // 2) Verificar que coincida con la búsqueda (sin distinguir mayúsculas/minúsculas)
+        const cumpleBusqueda = tarea.texto.toLowerCase().includes(textoBusqueda);
 
-        return true; // "todas"
+        return cumpleFiltro && cumpleBusqueda;
       });
 
       actualizarContador();
+
+      // Si hay una búsqueda activa y no se encontraron coincidencias, mostrar mensaje
+      if (tareasVisibles.length === 0 && textoBusqueda !== "") {
+        const mensajeVacio = document.createElement("li");
+        mensajeVacio.textContent = "No hay resultados";
+        mensajeVacio.classList.add("sin-resultados");
+        listaTareas.appendChild(mensajeVacio);
+        return;
+      }
 
       tareasVisibles.forEach(function (tarea) {
         const item = document.createElement("li");
@@ -528,6 +605,20 @@
 
         mostrarTareas();
       });
+    });
+
+    // NUEVO: Buscar en tiempo real mientras el usuario escribe
+    campoBuscar.addEventListener("input", function () {
+      textoBusqueda = campoBuscar.value.trim().toLowerCase();
+      mostrarTareas();
+    });
+
+    // NUEVO: Botón para limpiar la búsqueda
+    botonLimpiar.addEventListener("click", function () {
+      campoBuscar.value = "";
+      textoBusqueda = "";
+      campoBuscar.focus();
+      mostrarTareas();
     });
 
     // Agregar con el botón y con la tecla Enter
