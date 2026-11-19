@@ -52,7 +52,7 @@
     }
 
     #campoTarea {
-      flex: 1;
+      flex: 1 1 100%;
       min-width: 160px;
       padding: 10px 12px;
       font-size: 1rem;
@@ -67,8 +67,9 @@
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
-    /* NUEVO: Selector de fecha opcional */
+    /* Selector de fecha opcional */
     #campoFecha {
+      flex: 1;
       padding: 9px 10px;
       font-size: 0.9rem;
       font-family: inherit;
@@ -81,6 +82,26 @@
     }
 
     #campoFecha:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    /* NUEVO: Selector de prioridad */
+    #campoPrioridad {
+      padding: 9px 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      font-weight: 600;
+      color: #374151;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      outline: none;
+      background: #ffffff;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #campoPrioridad:focus {
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
@@ -194,12 +215,44 @@
       background: #7e22ce;
     }
 
+    /* NUEVO: Barra de contador + botón de organizar */
+    .barra-estado {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
     /* Contador de tareas pendientes */
     #contador {
-      margin: 0 0 16px;
+      margin: 0;
       font-size: 0.95rem;
       font-weight: 600;
       color: #6b7280;
+    }
+
+    /* NUEVO: Botón para abrir la ventana flotante de orden */
+    #botonAbrirOrden {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #4f46e5;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    #botonAbrirOrden:hover {
+      background: #e0e7ff;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(79, 70, 229, 0.2);
+    }
+
+    #botonAbrirOrden:active {
+      transform: translateY(0);
     }
 
     /* Lista sin viñetas */
@@ -229,13 +282,13 @@
       background: #f3f4f6;
     }
 
-    /* NUEVO: Contenedor para el texto y la fecha de cada tarea */
+    /* Contenedor para el texto y la fecha de cada tarea */
     .contenido-tarea {
       flex: 1;
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
     }
 
     .contenido-tarea span {
@@ -243,7 +296,7 @@
       transition: color 0.2s ease;
     }
 
-    /* NUEVO: Estilos de fecha y estados (Vencida / Vence hoy) */
+    /* Estilos de fecha, prioridad y estados (Vencida / Vence hoy) */
     .info-fecha {
       display: flex;
       flex-wrap: wrap;
@@ -251,6 +304,30 @@
       gap: 6px;
       font-size: 0.82rem;
       color: #6b7280;
+    }
+
+    /* NUEVO: Etiquetas de prioridad */
+    .etiqueta-prioridad {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: capitalize;
+    }
+
+    .prioridad-alta {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
+    .prioridad-media {
+      color: #b45309;
+      background: #fef3c7;
+    }
+
+    .prioridad-baja {
+      color: #1d4ed8;
+      background: #dbeafe;
     }
 
     .etiqueta-vencida {
@@ -313,7 +390,8 @@
 
     /* Casilla para editar una tarea directamente en la lista */
     #listaTareas li input[type="text"],
-    #listaTareas li input[type="date"] {
+    #listaTareas li input[type="date"],
+    #listaTareas li select {
       width: 100%;
       box-sizing: border-box;
       padding: 7px 10px;
@@ -322,20 +400,22 @@
       border: 2px solid #e5e7eb;
       border-radius: 6px;
       outline: none;
+      background: #ffffff;
     }
 
     #listaTareas li input[type="text"]:focus,
-    #listaTareas li input[type="date"]:focus {
+    #listaTareas li input[type="date"]:focus,
+    #listaTareas li select:focus {
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
-    /* Ventana de confirmación */
+    /* Ventana de confirmación y ventana flotante de orden */
     dialog {
       border: none;
       border-radius: 14px;
       padding: 24px;
-      max-width: 320px;
+      max-width: 340px;
       width: calc(100% - 48px);
       text-align: center;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
@@ -380,14 +460,75 @@
       box-shadow: 0 4px 10px rgba(239, 68, 68, 0.35);
     }
 
-    #botonCancelar {
+    #botonCancelar,
+    #botonCancelarOrden {
       color: #374151;
       background: #e5e7eb;
     }
 
-    #botonCancelar:hover {
+    #botonCancelar:hover,
+    #botonCancelarOrden:hover {
       background: #d1d5db;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    /* NUEVO: Estilos de la ventana flotante de ordenamiento */
+    #ventanaOrdenar h2 {
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .opciones-orden {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .opcion-orden {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #374151;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .opcion-orden:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+
+    .opcion-orden input[type="radio"] {
+      width: 17px;
+      height: 17px;
+      accent-color: #4f46e5;
+      cursor: pointer;
+    }
+
+    .acciones-orden {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    #botonAplicarOrden {
+      color: #ffffff;
+      background: #4f46e5;
+    }
+
+    #botonAplicarOrden:hover {
+      background: #4338ca;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
     }
   </style>
 </head>
@@ -400,8 +541,14 @@
 
     <div class="fila-agregar">
       <input type="text" id="campoTarea" placeholder="Escribe una tarea">
-      <!-- NUEVO: Selector de fecha opcional -->
+      <!-- Selector de fecha opcional -->
       <input type="date" id="campoFecha" title="Fecha límite (opcional)">
+      <!-- NUEVO: Selector de prioridad -->
+      <select id="campoPrioridad" title="Prioridad de la tarea">
+        <option value="alta">Prioridad: Alta</option>
+        <option value="media" selected>Prioridad: Media</option>
+        <option value="baja">Prioridad: Baja</option>
+      </select>
       <button id="botonAgregar">Agregar</button>
     </div>
 
@@ -418,8 +565,12 @@
       <button id="filtroCompletadas" data-filtro="completadas">Completadas</button>
     </div>
 
-    <!-- Contador de tareas pendientes -->
-    <p id="contador"></p>
+    <!-- Barra con contador de pendientes y botón de organizar -->
+    <div class="barra-estado">
+      <p id="contador"></p>
+      <!-- NUEVO: Botón para abrir la ventana flotante de orden -->
+      <button id="botonAbrirOrden" type="button">Ordenar: Antigüedad</button>
+    </div>
 
     <ul id="listaTareas"></ul>
 
@@ -432,11 +583,53 @@
     <button id="botonCancelar">Cancelar</button>
   </dialog>
 
+  <!-- NUEVO: Ventana flotante para organizar tareas -->
+  <dialog id="ventanaOrdenar">
+    <h2>Organizar tareas por</h2>
+    <div class="opciones-orden">
+      <label class="opcion-orden">
+        <input type="radio" name="criterioOrden" value="antiguedad" checked>
+        <span>Antigüedad (más antiguas primero)</span>
+      </label>
+      <label class="opcion-orden">
+        <input type="radio" name="criterioOrden" value="recientes">
+        <span>Más recientes primero</span>
+      </label>
+      <label class="opcion-orden">
+        <input type="radio" name="criterioOrden" value="prioridad">
+        <span>Prioridad (Alta → Media → Baja)</span>
+      </label>
+    </div>
+    <div class="acciones-orden">
+      <button id="botonAplicarOrden" type="button">Aplicar</button>
+      <button id="botonCancelarOrden" type="button">Cancelar</button>
+    </div>
+  </dialog>
+
   <script>
+    // Obtener la fecha de hoy en formato "AAAA-MM-DD" (hora local)
+    function obtenerFechaHoy() {
+      const ahora = new Date();
+      const anio = ahora.getFullYear();
+      const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+      const dia = String(ahora.getDate()).padStart(2, "0");
+      return anio + "-" + mes + "-" + dia;
+    }
+
+    // Convertir "AAAA-MM-DD" a "DD/MM/AAAA" (día/mes/año)
+    function formatearFecha(fechaISO) {
+      if (!fechaISO) {
+        return "";
+      }
+      const partes = fechaISO.split("-");
+      return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
     // 1. Conectar el código con los elementos de la página
     const campoTarea = document.getElementById("campoTarea");
     const campoFecha = document.getElementById("campoFecha");
     campoFecha.min = obtenerFechaHoy();
+    const campoPrioridad = document.getElementById("campoPrioridad");
     const botonAgregar = document.getElementById("botonAgregar");
     const campoBuscar = document.getElementById("campoBuscar");
     const botonLimpiar = document.getElementById("botonLimpiar");
@@ -446,6 +639,12 @@
     const botonCancelar = document.getElementById("botonCancelar");
     const contador = document.getElementById("contador");
     const botonesFiltro = document.querySelectorAll(".filtros button");
+
+    // NUEVO: Elementos de la ventana flotante de ordenamiento
+    const botonAbrirOrden = document.getElementById("botonAbrirOrden");
+    const ventanaOrdenar = document.getElementById("ventanaOrdenar");
+    const botonAplicarOrden = document.getElementById("botonAplicarOrden");
+    const botonCancelarOrden = document.getElementById("botonCancelarOrden");
 
     // 2. GUARDADO: nombre del "cajón" del navegador donde guardamos las tareas
     const CLAVE = "lista-de-tareas";
@@ -475,26 +674,8 @@
       }
     }
 
-    // NUEVO: Obtener la fecha de hoy en formato "AAAA-MM-DD" (hora local)
-    function obtenerFechaHoy() {
-      const ahora = new Date();
-      const anio = ahora.getFullYear();
-      const mes = String(ahora.getMonth() + 1).padStart(2, "0");
-      const dia = String(ahora.getDate()).padStart(2, "0");
-      return anio + "-" + mes + "-" + dia;
-    }
-
-    // NUEVO: Convertir "AAAA-MM-DD" a "DD/MM/AAAA" (día/mes/año)
-    function formatearFecha(fechaISO) {
-      if (!fechaISO) {
-        return "";
-      }
-      const partes = fechaISO.split("-");
-      return partes[2] + "/" + partes[1] + "/" + partes[0];
-    }
-
     // 3. La lista de tareas vive aquí, en memoria.
-    //    Cada tarea es un objeto: { id: 123, texto: "Comprar pan", fecha: "2026-11-20", completada: false }
+    //    Cada tarea es un objeto: { id: 123, texto: "Comprar pan", fecha: "2026-11-20", prioridad: "media", completada: false }
     let tareas = cargarTareas();
 
     // Recuerda qué tarea se quiere borrar mientras la ventana está abierta
@@ -504,11 +685,21 @@
     // No se guarda: al recargar la página vuelve a "todas".
     let filtroActual = "todas";
 
+    // NUEVO: Criterio de orden activo: "antiguedad", "recientes" o "prioridad"
+    let ordenActual = "antiguedad";
+
     // Texto actual de búsqueda (en minúsculas)
     let textoBusqueda = "";
 
-    // Lista aparte, solo para mostrar. La lista original "tareas" nunca se modifica al filtrar o buscar.
+    // Lista aparte, solo para mostrar. La lista original "tareas" nunca se modifica al filtrar, buscar u ordenar.
     let tareasVisibles = [];
+
+    // NUEVO: Peso numérico de cada prioridad para ordenar (Alta = 1, Media = 2, Baja = 3)
+    const PESO_PRIORIDAD = {
+      alta: 1,
+      media: 2,
+      baja: 3
+    };
 
     // Actualizar el contador de tareas pendientes (siempre cuenta sobre la lista original)
     function actualizarContador() {
@@ -521,7 +712,7 @@
         : pendientes + " tareas pendientes";
     }
 
-    // 4. Dibujar en la página las tareas que toca mostrar según el filtro y la búsqueda
+    // 4. Dibujar en la página las tareas que toca mostrar según el filtro, búsqueda y orden
     function mostrarTareas() {
       listaTareas.innerHTML = ""; // vaciar lo que se veía antes
       const hoy = obtenerFechaHoy();
@@ -542,6 +733,26 @@
         return cumpleFiltro && cumpleBusqueda;
       });
 
+      // NUEVO: Ordenar la copia visible según el criterio seleccionado (funciona en Todas, Pendientes y Completadas)
+      tareasVisibles.sort(function (a, b) {
+        if (ordenActual === "prioridad") {
+          const pesoA = PESO_PRIORIDAD[a.prioridad || "media"];
+          const pesoB = PESO_PRIORIDAD[b.prioridad || "media"];
+          if (pesoA !== pesoB) {
+            return pesoA - pesoB;
+          }
+          // Si tienen la misma prioridad, desempata por antigüedad
+          return a.id - b.id;
+        }
+
+        if (ordenActual === "recientes") {
+          return b.id - a.id;
+        }
+
+        // Por defecto: "antiguedad" (más antiguas primero, según el id timestamp)
+        return a.id - b.id;
+      });
+
       actualizarContador();
 
       // Si hay una búsqueda activa y no se encontraron coincidencias, mostrar mensaje
@@ -560,7 +771,7 @@
         casilla.type = "checkbox";
         casilla.checked = tarea.completada;
 
-        // Contenedor para el texto y la fecha límite
+        // Contenedor para el texto, prioridad y fecha límite
         const contenido = document.createElement("div");
         contenido.classList.add("contenido-tarea");
 
@@ -570,11 +781,19 @@
 
         contenido.appendChild(etiqueta);
 
-        // NUEVO: Mostrar fecha límite si la tarea tiene una asignada
-        if (tarea.fecha) {
-          const infoFecha = document.createElement("div");
-          infoFecha.classList.add("info-fecha");
+        // Fila secundaria de metadatos (prioridad + fecha límite)
+        const infoFecha = document.createElement("div");
+        infoFecha.classList.add("info-fecha");
 
+        // NUEVO: Etiqueta de prioridad de la tarea
+        const prioridadTarea = tarea.prioridad || "media";
+        const badgePrioridad = document.createElement("span");
+        badgePrioridad.textContent = "Prioridad " + prioridadTarea;
+        badgePrioridad.classList.add("etiqueta-prioridad", "prioridad-" + prioridadTarea);
+        infoFecha.appendChild(badgePrioridad);
+
+        // Mostrar fecha límite si la tarea tiene una asignada
+        if (tarea.fecha) {
           const textoFecha = document.createElement("small");
           textoFecha.textContent = "Límite: " + formatearFecha(tarea.fecha);
 
@@ -605,9 +824,9 @@
             // Fecha futura normal
             infoFecha.appendChild(textoFecha);
           }
-
-          contenido.appendChild(infoFecha);
         }
+
+        contenido.appendChild(infoFecha);
 
         const botonBorrar = document.createElement("button");
         botonBorrar.textContent = "Borrar";
@@ -616,7 +835,7 @@
         const botonEditar = document.createElement("button");
         botonEditar.textContent = "Editar";
 
-        // Al presionar "Editar": se muestra una casilla con el texto actual y su fecha
+        // Al presionar "Editar": se muestra una casilla con el texto actual, fecha y prioridad
         botonEditar.addEventListener("click", function () {
           const campoEditar = document.createElement("input");
           campoEditar.type = "text";
@@ -625,6 +844,15 @@
           const campoEditarFecha = document.createElement("input");
           campoEditarFecha.type = "date";
           campoEditarFecha.value = tarea.fecha || "";
+          campoEditarFecha.min = obtenerFechaHoy();
+
+          // NUEVO: Selector para editar prioridad
+          const campoEditarPrioridad = document.createElement("select");
+          campoEditarPrioridad.innerHTML =
+            '<option value="alta">Prioridad: Alta</option>' +
+            '<option value="media">Prioridad: Media</option>' +
+            '<option value="baja">Prioridad: Baja</option>';
+          campoEditarPrioridad.value = tarea.prioridad || "media";
 
           const botonGuardar = document.createElement("button");
           botonGuardar.textContent = "Guardar";
@@ -632,6 +860,7 @@
           contenido.innerHTML = "";
           contenido.appendChild(campoEditar);
           contenido.appendChild(campoEditarFecha);
+          contenido.appendChild(campoEditarPrioridad);
 
           item.replaceChild(botonGuardar, botonEditar);
 
@@ -640,13 +869,21 @@
           // Al presionar "Guardar": se actualiza y guarda la tarea
           botonGuardar.addEventListener("click", function () {
             const nuevoTexto = campoEditar.value.trim();
+            const nuevaFecha = campoEditarFecha.value;
 
             if (nuevoTexto === "") {
               return;
             }
 
+            if (nuevaFecha !== "" && nuevaFecha !== tarea.fecha && nuevaFecha < obtenerFechaHoy()) {
+              alert("No puedes elegir una fecha pasada.");
+              campoEditarFecha.focus();
+              return;
+            }
+
             tarea.texto = nuevoTexto;
-            tarea.fecha = campoEditarFecha.value;
+            tarea.fecha = nuevaFecha;
+            tarea.prioridad = campoEditarPrioridad.value;
             guardarTareas();
             mostrarTareas();
           });
@@ -682,15 +919,23 @@
     // 5. Agregar una tarea nueva: se suma a la lista, SE GUARDA y se redibuja
     function agregarTarea() {
       const texto = campoTarea.value.trim();
+      const fechaSeleccionada = campoFecha.value;
 
       if (texto === "") {
+        return;
+      }
+      campoFecha.min = obtenerFechaHoy();
+      if (fechaSeleccionada !== "" && fechaSeleccionada < obtenerFechaHoy()) {
+        alert("No puedes elegir una fecha pasada.");
+        campoFecha.focus();
         return;
       }
 
       tareas.push({
         id: Date.now(), // un número único basado en la hora actual
         texto: texto,
-        fecha: campoFecha.value, // opcional: queda "" si no se eligió fecha
+        fecha: fechaSeleccionada, // opcional: queda "" si no se eligió fecha
+        prioridad: campoPrioridad.value,
         completada: false
       });
 
@@ -699,6 +944,7 @@
 
       campoTarea.value = "";
       campoFecha.value = "";
+      campoPrioridad.value = "media";
       campoTarea.focus();
     }
 
@@ -732,6 +978,39 @@
       tareaPendienteId = null;
     });
 
+    // NUEVO: Abrir ventana flotante de organización
+    botonAbrirOrden.addEventListener("click", function () {
+      // Sincroniza el radio marcado con el orden que está activo actualmente
+      const radioActual = ventanaOrdenar.querySelector('input[value="' + ordenActual + '"]');
+      if (radioActual) {
+        radioActual.checked = true;
+      }
+      ventanaOrdenar.showModal();
+    });
+
+    // NUEVO: Aplicar criterio seleccionado en la ventana flotante
+    botonAplicarOrden.addEventListener("click", function () {
+      const seleccionado = ventanaOrdenar.querySelector('input[name="criterioOrden"]:checked');
+      if (seleccionado) {
+        ordenActual = seleccionado.value;
+
+        const etiquetasOrden = {
+          antiguedad: "Ordenar: Antigüedad",
+          recientes: "Ordenar: Recientes",
+          prioridad: "Ordenar: Prioridad"
+        };
+        botonAbrirOrden.textContent = etiquetasOrden[ordenActual];
+
+        mostrarTareas();
+      }
+      ventanaOrdenar.close();
+    });
+
+    // NUEVO: Cancelar sin aplicar cambios
+    botonCancelarOrden.addEventListener("click", function () {
+      ventanaOrdenar.close();
+    });
+
     // Botones de filtro: cambian el filtro, resaltan el activo y redibujan
     botonesFiltro.forEach(function (boton) {
       boton.addEventListener("click", function () {
@@ -741,7 +1020,7 @@
           otro.classList.toggle("activo", otro === boton);
         });
 
-        mostrarTareas();
+         mostrarTareas();
       });
     });
 
