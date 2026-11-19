@@ -29,6 +29,35 @@
       box-shadow: 0 10px 30px rgba(79, 70, 229, 0.15);
     }
 
+    /* Barra superior con el botón de tema */
+    .barra-tema {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    #botonTema {
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      line-height: 1;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+    }
+
+    #botonTema:hover {
+      background: #e0e7ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+    }
+
+    #botonTema:active {
+      transform: translateY(0);
+    }
+
     /* Título de la aplicación */
     h1 {
       text-align: center;
@@ -86,7 +115,7 @@
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
-    /* NUEVO: Selector de prioridad */
+    /* Selector de prioridad */
     #campoPrioridad {
       padding: 9px 10px;
       font-size: 0.9rem;
@@ -215,7 +244,7 @@
       background: #7e22ce;
     }
 
-    /* NUEVO: Barra de contador + botón de organizar */
+    /* Barra de contador + botón de organizar */
     .barra-estado {
       display: flex;
       align-items: center;
@@ -232,7 +261,7 @@
       color: #6b7280;
     }
 
-    /* NUEVO: Botón para abrir la ventana flotante de orden */
+    /* Botón para abrir la ventana flotante de orden */
     #botonAbrirOrden {
       padding: 6px 12px;
       font-size: 0.85rem;
@@ -306,7 +335,7 @@
       color: #6b7280;
     }
 
-    /* NUEVO: Etiquetas de prioridad */
+    /* Etiquetas de prioridad */
     .etiqueta-prioridad {
       font-size: 0.75rem;
       font-weight: 700;
@@ -472,7 +501,7 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
     }
 
-    /* NUEVO: Estilos de la ventana flotante de ordenamiento */
+    /* Estilos de la ventana flotante de ordenamiento */
     #ventanaOrdenar h2 {
       margin: 0 0 16px;
       font-size: 1.2rem;
@@ -530,11 +559,241 @@
       background: #4338ca;
       box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
     }
+
+    /* =====================================================
+       MODO OSCURO
+       Todo lo de abajo solo se aplica cuando el body
+       tiene la clase "oscuro". El modo claro no cambia.
+       ===================================================== */
+
+    /* Fondo y texto principal */
+    body.oscuro {
+      background: linear-gradient(135deg, #111827 0%, #1e1b4b 100%);
+      color: #f3f4f6;
+      color-scheme: dark; /* calendario y barras de desplazamiento en oscuro */
+    }
+
+    body.oscuro .contenedor {
+      background: #1f2937;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Título con color de acento */
+    body.oscuro h1 {
+      background: none;
+      -webkit-text-fill-color: #818cf8;
+      color: #818cf8;
+    }
+
+    /* Botón de tema */
+    body.oscuro #botonTema {
+      background: #374151;
+      border-color: #4b5563;
+    }
+
+    body.oscuro #botonTema:hover {
+      background: #4b5563;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Campos de texto, fecha, prioridad y búsqueda */
+    body.oscuro #campoTarea,
+    body.oscuro #campoFecha,
+    body.oscuro #campoPrioridad,
+    body.oscuro #campoBuscar,
+    body.oscuro #listaTareas li input[type="text"],
+    body.oscuro #listaTareas li input[type="date"],
+    body.oscuro #listaTareas li select {
+      background: #111827;
+      color: #f3f4f6;
+      border-color: #4b5563;
+    }
+
+    body.oscuro #campoTarea:focus,
+    body.oscuro #campoFecha:focus,
+    body.oscuro #campoPrioridad:focus,
+    body.oscuro #campoBuscar:focus,
+    body.oscuro #listaTareas li input[type="text"]:focus,
+    body.oscuro #listaTareas li input[type="date"]:focus,
+    body.oscuro #listaTareas li select:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
+    }
+
+    body.oscuro input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Botón Agregar (acento) */
+    body.oscuro #botonAgregar {
+      background: #818cf8;
+      color: #111827; /* texto oscuro para buen contraste sobre el acento */
+    }
+
+    body.oscuro #botonAgregar:hover {
+      background: #a5b4fc;
+      box-shadow: 0 4px 10px rgba(129, 140, 248, 0.35);
+    }
+
+    /* Botón Limpiar */
+    body.oscuro #botonLimpiar {
+      background: #374151;
+      color: #f3f4f6;
+    }
+
+    body.oscuro #botonLimpiar:hover {
+      background: #4b5563;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Filtros */
+    body.oscuro .filtros button {
+      background: #374151;
+      color: #f3f4f6;
+    }
+
+    body.oscuro .filtros button:hover {
+      background: #4b5563;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    body.oscuro .filtros button.activo {
+      background: #818cf8;
+      color: #111827;
+      box-shadow: 0 4px 10px rgba(129, 140, 248, 0.35);
+    }
+
+    body.oscuro .filtros button.activo:hover {
+      background: #a5b4fc;
+    }
+
+    /* Contador y botón de ordenar */
+    body.oscuro #contador {
+      color: #9ca3af;
+    }
+
+    body.oscuro #botonAbrirOrden {
+      background: #374151;
+      color: #f3f4f6;
+      border-color: #4b5563;
+    }
+
+    body.oscuro #botonAbrirOrden:hover {
+      background: #4b5563;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Filas de tareas */
+    body.oscuro #listaTareas li {
+      background: #374151;
+      border-color: #4b5563;
+    }
+
+    body.oscuro #listaTareas li.sin-resultados {
+      background: #1f2937;
+      color: #9ca3af;
+    }
+
+    body.oscuro #listaTareas input[type="checkbox"] {
+      accent-color: #818cf8;
+    }
+
+    body.oscuro .info-fecha {
+      color: #9ca3af;
+    }
+
+    body.oscuro .completada {
+      color: #9ca3af;
+    }
+
+    /* Etiquetas de prioridad */
+    body.oscuro .prioridad-alta {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    body.oscuro .prioridad-media {
+      color: #fcd34d;
+      background: rgba(245, 158, 11, 0.2);
+    }
+
+    body.oscuro .prioridad-baja {
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    /* Vencida y Vence hoy */
+    body.oscuro .etiqueta-vencida {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    body.oscuro .texto-vencida {
+      color: #f87171;
+    }
+
+    body.oscuro .etiqueta-hoy {
+      color: #fdba74;
+      background: rgba(249, 115, 22, 0.2);
+    }
+
+    /* Ventanas flotantes (confirmar y ordenar) */
+    body.oscuro dialog {
+      background: #1f2937;
+      color: #f3f4f6;
+      border: 1px solid #4b5563;
+    }
+
+    body.oscuro #botonCancelar,
+    body.oscuro #botonCancelarOrden {
+      background: #374151;
+      color: #f3f4f6;
+    }
+
+    body.oscuro #botonCancelar:hover,
+    body.oscuro #botonCancelarOrden:hover {
+      background: #4b5563;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    body.oscuro #ventanaOrdenar h2 {
+      color: #f3f4f6;
+    }
+
+    body.oscuro .opcion-orden {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f3f4f6;
+    }
+
+    body.oscuro .opcion-orden:hover {
+      background: #4b5563;
+      border-color: #818cf8;
+    }
+
+    body.oscuro .opcion-orden input[type="radio"] {
+      accent-color: #818cf8;
+    }
+
+    body.oscuro #botonAplicarOrden {
+      background: #818cf8;
+      color: #111827;
+    }
+
+    body.oscuro #botonAplicarOrden:hover {
+      background: #a5b4fc;
+      box-shadow: 0 4px 10px rgba(129, 140, 248, 0.35);
+    }
   </style>
 </head>
 <body>
 
   <div class="contenedor">
+
+    <!-- Botón para cambiar de tema (claro/oscuro) -->
+    <div class="barra-tema">
+      <button id="botonTema" type="button" title="Cambiar tema" aria-label="Cambiar tema">🌙</button>
+    </div>
 
     <!-- ESTRUCTURA: lo que se ve en la página -->
     <h1>Mi lista de tareas</h1>
@@ -543,7 +802,7 @@
       <input type="text" id="campoTarea" placeholder="Escribe una tarea">
       <!-- Selector de fecha opcional -->
       <input type="date" id="campoFecha" title="Fecha límite (opcional)">
-      <!-- NUEVO: Selector de prioridad -->
+      <!-- Selector de prioridad -->
       <select id="campoPrioridad" title="Prioridad de la tarea">
         <option value="alta">Prioridad: Alta</option>
         <option value="media" selected>Prioridad: Media</option>
@@ -568,7 +827,7 @@
     <!-- Barra con contador de pendientes y botón de organizar -->
     <div class="barra-estado">
       <p id="contador"></p>
-      <!-- NUEVO: Botón para abrir la ventana flotante de orden -->
+      <!-- Botón para abrir la ventana flotante de orden -->
       <button id="botonAbrirOrden" type="button">Ordenar: Antigüedad</button>
     </div>
 
@@ -583,7 +842,7 @@
     <button id="botonCancelar">Cancelar</button>
   </dialog>
 
-  <!-- NUEVO: Ventana flotante para organizar tareas -->
+  <!-- Ventana flotante para organizar tareas -->
   <dialog id="ventanaOrdenar">
     <h2>Organizar tareas por</h2>
     <div class="opciones-orden">
@@ -640,7 +899,7 @@
     const contador = document.getElementById("contador");
     const botonesFiltro = document.querySelectorAll(".filtros button");
 
-    // NUEVO: Elementos de la ventana flotante de ordenamiento
+    // Elementos de la ventana flotante de ordenamiento
     const botonAbrirOrden = document.getElementById("botonAbrirOrden");
     const ventanaOrdenar = document.getElementById("ventanaOrdenar");
     const botonAplicarOrden = document.getElementById("botonAplicarOrden");
@@ -685,7 +944,7 @@
     // No se guarda: al recargar la página vuelve a "todas".
     let filtroActual = "todas";
 
-    // NUEVO: Criterio de orden activo: "antiguedad", "recientes" o "prioridad"
+    // Criterio de orden activo: "antiguedad", "recientes" o "prioridad"
     let ordenActual = "antiguedad";
 
     // Texto actual de búsqueda (en minúsculas)
@@ -694,12 +953,61 @@
     // Lista aparte, solo para mostrar. La lista original "tareas" nunca se modifica al filtrar, buscar u ordenar.
     let tareasVisibles = [];
 
-    // NUEVO: Peso numérico de cada prioridad para ordenar (Alta = 1, Media = 2, Baja = 3)
+    // Peso numérico de cada prioridad para ordenar (Alta = 1, Media = 2, Baja = 3)
     const PESO_PRIORIDAD = {
       alta: 1,
       media: 2,
       baja: 3
     };
+
+    // ===== TEMA (claro / oscuro) =====
+    // Clave distinta a la de las tareas, para no mezclar los datos
+    const CLAVE_TEMA = "tema-app";
+    const botonTema = document.getElementById("botonTema");
+
+    // Leer el tema guardado. Si no hay nada (o es inválido), usamos "claro"
+    function cargarTema() {
+      try {
+        const guardado = localStorage.getItem(CLAVE_TEMA);
+        if (guardado === "claro" || guardado === "oscuro") {
+          return guardado;
+        }
+      } catch (error) {
+        // Si el navegador no permite leer, usamos el tema claro
+      }
+      return "claro";
+    }
+
+    // Guardar el tema actual
+    function guardarTema() {
+      try {
+        localStorage.setItem(CLAVE_TEMA, tema);
+      } catch (error) {
+        // Si no se puede guardar, el cambio de tema igual funciona
+      }
+    }
+
+    // Estado: "claro" u "oscuro"
+    let tema = cargarTema();
+
+    // Aplicar el tema a la página: pone o quita la clase "oscuro" y cambia el icono
+    function aplicarTema() {
+      const esOscuro = tema === "oscuro";
+      document.body.classList.toggle("oscuro", esOscuro);
+      botonTema.textContent = esOscuro ? "☀️" : "🌙";
+      botonTema.title = esOscuro ? "Cambiar a modo claro" : "Cambiar a modo oscuro";
+      botonTema.setAttribute("aria-label", botonTema.title);
+    }
+
+    // Al hacer clic: alternar entre claro y oscuro, guardar y aplicar
+    botonTema.addEventListener("click", function () {
+      tema = tema === "claro" ? "oscuro" : "claro";
+      guardarTema();
+      aplicarTema();
+    });
+
+    // Aplicar el tema guardado al abrir la página
+    aplicarTema();
 
     // Actualizar el contador de tareas pendientes (siempre cuenta sobre la lista original)
     function actualizarContador() {
@@ -733,7 +1041,7 @@
         return cumpleFiltro && cumpleBusqueda;
       });
 
-      // NUEVO: Ordenar la copia visible según el criterio seleccionado (funciona en Todas, Pendientes y Completadas)
+      // Ordenar la copia visible según el criterio seleccionado (funciona en Todas, Pendientes y Completadas)
       tareasVisibles.sort(function (a, b) {
         if (ordenActual === "prioridad") {
           const pesoA = PESO_PRIORIDAD[a.prioridad || "media"];
@@ -785,7 +1093,7 @@
         const infoFecha = document.createElement("div");
         infoFecha.classList.add("info-fecha");
 
-        // NUEVO: Etiqueta de prioridad de la tarea
+        // Etiqueta de prioridad de la tarea
         const prioridadTarea = tarea.prioridad || "media";
         const badgePrioridad = document.createElement("span");
         badgePrioridad.textContent = "Prioridad " + prioridadTarea;
@@ -846,7 +1154,7 @@
           campoEditarFecha.value = tarea.fecha || "";
           campoEditarFecha.min = obtenerFechaHoy();
 
-          // NUEVO: Selector para editar prioridad
+          // Selector para editar prioridad
           const campoEditarPrioridad = document.createElement("select");
           campoEditarPrioridad.innerHTML =
             '<option value="alta">Prioridad: Alta</option>' +
@@ -875,6 +1183,8 @@
               return;
             }
 
+            // Se permite conservar la fecha original (aunque ya esté vencida);
+            // solo se rechaza una fecha pasada NUEVA
             if (nuevaFecha !== "" && nuevaFecha !== tarea.fecha && nuevaFecha < obtenerFechaHoy()) {
               alert("No puedes elegir una fecha pasada.");
               campoEditarFecha.focus();
@@ -921,10 +1231,13 @@
       const texto = campoTarea.value.trim();
       const fechaSeleccionada = campoFecha.value;
 
+      // Mantener el mínimo de fecha al día de hoy (por si la página lleva días abierta)
+      campoFecha.min = obtenerFechaHoy();
+
       if (texto === "") {
         return;
       }
-      campoFecha.min = obtenerFechaHoy();
+
       if (fechaSeleccionada !== "" && fechaSeleccionada < obtenerFechaHoy()) {
         alert("No puedes elegir una fecha pasada.");
         campoFecha.focus();
@@ -978,7 +1291,7 @@
       tareaPendienteId = null;
     });
 
-    // NUEVO: Abrir ventana flotante de organización
+    // Abrir ventana flotante de organización
     botonAbrirOrden.addEventListener("click", function () {
       // Sincroniza el radio marcado con el orden que está activo actualmente
       const radioActual = ventanaOrdenar.querySelector('input[value="' + ordenActual + '"]');
@@ -988,7 +1301,7 @@
       ventanaOrdenar.showModal();
     });
 
-    // NUEVO: Aplicar criterio seleccionado en la ventana flotante
+    // Aplicar criterio seleccionado en la ventana flotante
     botonAplicarOrden.addEventListener("click", function () {
       const seleccionado = ventanaOrdenar.querySelector('input[name="criterioOrden"]:checked');
       if (seleccionado) {
@@ -1006,7 +1319,7 @@
       ventanaOrdenar.close();
     });
 
-    // NUEVO: Cancelar sin aplicar cambios
+    // Cancelar sin aplicar cambios
     botonCancelarOrden.addEventListener("click", function () {
       ventanaOrdenar.close();
     });
@@ -1020,7 +1333,7 @@
           otro.classList.toggle("activo", otro === boton);
         });
 
-         mostrarTareas();
+        mostrarTareas();
       });
     });
 
